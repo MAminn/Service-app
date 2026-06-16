@@ -17,7 +17,8 @@
     "label": "اللغة",
     "it": "Italiano",
     "en": "English",
-    "ar": "العربية"
+    "ar": "العربية",
+    "restartNotice": "أعد تشغيل التطبيق لتطبيق اتجاه التخطيط الجديد."
   },
   "categories": {
     "title": "الخدمات",

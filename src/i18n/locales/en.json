@@ -17,7 +17,8 @@
     "label": "Language",
     "it": "Italiano",
     "en": "English",
-    "ar": "العربية"
+    "ar": "العربية",
+    "restartNotice": "Restart the app to apply the new layout direction."
   },
   "categories": {
     "title": "Services",

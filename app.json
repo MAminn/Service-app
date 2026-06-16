@@ -19,10 +19,6 @@
     "android": {
       "package": "com.milano.homeservices"
     },
-    "extra": {
-      "supabaseUrl": "",
-      "supabaseAnonKey": ""
-    },
     "plugins": ["expo-localization"]
   }
 }

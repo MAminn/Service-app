@@ -1,30 +1,39 @@
 import { useMutation } from "@tanstack/react-query";
 
 import { supabase } from "../lib/supabase";
-import type { NewOrderInput, Order } from "../types";
+import type { NewOrderInput, OrderStatus } from "../types";
 
-async function createOrder(input: NewOrderInput): Promise<Order> {
-  const { data, error } = await supabase
-    .from("orders")
-    .insert({
-      service_id: input.service_id,
-      zone_id: input.zone_id,
-      customer_name: input.customer_name.trim(),
-      customer_phone: input.customer_phone.trim(),
-      customer_email: input.customer_email.trim(),
-      customer_address: input.customer_address.trim(),
-      details: input.details?.trim() || null,
-      notes: input.notes?.trim() || null,
-      payment_method: input.payment_method ?? "cash",
-      // status / payment_status fall back to DB defaults (pending / unpaid).
-    })
-    .select(
-      "id, reference, service_id, zone_id, customer_name, customer_phone, customer_email, customer_address, details, notes, status, payment_method, payment_status, scheduled_at, created_at, updated_at",
-    )
-    .single();
+/** Minimal order info returned by the create_order RPC. */
+export interface CreatedOrder {
+  id: string;
+  reference: string;
+  status: OrderStatus;
+}
+
+async function createOrder(input: NewOrderInput): Promise<CreatedOrder> {
+  // Use the SECURITY DEFINER RPC: the anon role has no SELECT policy on
+  // `orders`, so insert().select() would fail. status/payment_status are
+  // forced server-side inside the function.
+  const { data, error } = await supabase.rpc("create_order", {
+    p_service_id: input.service_id,
+    p_zone_id: input.zone_id,
+    p_customer_name: input.customer_name,
+    p_customer_phone: input.customer_phone,
+    p_customer_email: input.customer_email,
+    p_customer_address: input.customer_address,
+    p_details: input.details ?? null,
+    p_notes: input.notes ?? null,
+    p_payment_method: input.payment_method ?? "cash",
+  });
 
   if (error) throw error;
-  return data as Order;
+
+  // RPCs returning TABLE(...) come back as an array of rows.
+  const row = Array.isArray(data) ? data[0] : data;
+  if (!row?.reference) {
+    throw new Error("create_order returned no reference");
+  }
+  return row as CreatedOrder;
 }
 
 export function useCreateOrder() {

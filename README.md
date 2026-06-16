@@ -41,6 +41,7 @@ src/
   types/        Domain entity types
 supabase/
   migrations/   0001_init.sql  (schema, enums, triggers, RLS, tracking RPC)
+                0002_create_order_rpc.sql  (SECURITY DEFINER create_order RPC)
   seed.sql      Categories, services, Milano zone
 ```
 
@@ -55,6 +56,7 @@ supabase/
 1. Create a project at <https://supabase.com>.
 2. In the **SQL Editor**, run, in order:
    - `supabase/migrations/0001_init.sql`
+   - `supabase/migrations/0002_create_order_rpc.sql`
    - `supabase/seed.sql`
 
    (Or, with the Supabase CLI: `supabase db push` then run the seed file.)
@@ -107,14 +109,19 @@ npm run typecheck   # tsc --noEmit
 
 - Device language is auto-detected; falls back to Italian.
 - Use the language chips on the home screen to switch it / en / ar.
-- Switching to Arabic flips layout direction via `I18nManager`. A native
-  LTR↔RTL flip fully applies after an app reload (standard React Native
-  behavior).
+- Switching to Arabic flips layout direction via `I18nManager` and reloads the
+  app (`expo-updates`) so the new direction applies immediately. In
+  environments where reload isn't available (Expo Go / dev), a one-line
+  "restart to apply" notice is shown instead.
 
 ## Security notes
 
 - All tables have RLS enabled.
-- Public role: read active catalog, insert `pending` orders only, and call
+- Orders are created via the `create_order(...)` SECURITY DEFINER RPC, which
+  forces `status='pending'` and `payment_status='unpaid'` server-side and
+  returns only the new order's id/reference/status. The direct INSERT policy
+  remains as defense-in-depth.
+- Public role: read active catalog, and call
   `get_orders_by_phone(text)` to retrieve **only** orders matching the supplied
   phone (token derived inside the SECURITY DEFINER function).
 - The `orders` table is **not** directly selectable by the anon role.
