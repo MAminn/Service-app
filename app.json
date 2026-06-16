@@ -1,0 +1,28 @@
+{
+  "expo": {
+    "name": "Milano Home Services",
+    "slug": "milano-home-services",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "scheme": "milanohomeservices",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "splash": {
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "assetBundlePatterns": ["**/*"],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.milano.homeservices"
+    },
+    "android": {
+      "package": "com.milano.homeservices"
+    },
+    "extra": {
+      "supabaseUrl": "",
+      "supabaseAnonKey": ""
+    },
+    "plugins": ["expo-localization"]
+  }
+}

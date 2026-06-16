@@ -1,0 +1,88 @@
+{
+  "common": {
+    "appName": "Milano Home Services",
+    "currency": "€",
+    "loading": "Loading…",
+    "retry": "Retry",
+    "errorTitle": "Something went wrong",
+    "errorGeneric": "We couldn't load the data. Please try again.",
+    "required": "Required",
+    "optional": "optional",
+    "cancel": "Cancel",
+    "back": "Back",
+    "select": "Select…",
+    "from": "from"
+  },
+  "language": {
+    "label": "Language",
+    "it": "Italiano",
+    "en": "English",
+    "ar": "العربية"
+  },
+  "categories": {
+    "title": "Services",
+    "subtitle": "Choose a category",
+    "empty": "No services available yet."
+  },
+  "services": {
+    "title": "Services",
+    "empty": "No services in this category yet.",
+    "priceFrom": "from {{price}} {{unit}}"
+  },
+  "serviceDetail": {
+    "title": "Service",
+    "about": "About this service",
+    "requestCta": "Request service"
+  },
+  "request": {
+    "title": "Request service",
+    "intro": "No account needed. We'll use your phone number to keep you updated.",
+    "name": "Full name",
+    "phone": "Phone number",
+    "email": "Email",
+    "address": "Address",
+    "zone": "Zone",
+    "details": "Service details",
+    "detailsPlaceholder": "Describe what you need (optional)",
+    "notes": "Additional notes",
+    "notesPlaceholder": "Anything else we should know (optional)",
+    "submit": "Submit request",
+    "submitting": "Submitting…",
+    "errors": {
+      "name": "Please enter your full name.",
+      "phone": "Please enter a valid phone number.",
+      "email": "Please enter a valid email address.",
+      "address": "Please enter your address.",
+      "zone": "Please select a zone.",
+      "submit": "Could not submit your request. Please try again."
+    }
+  },
+  "confirmation": {
+    "title": "Request received",
+    "heading": "Thank you!",
+    "message": "Your request has been received and is now pending review.",
+    "referenceLabel": "Order reference",
+    "trackHint": "You can track this order anytime using your phone number.",
+    "trackCta": "Track my order",
+    "done": "Done"
+  },
+  "track": {
+    "title": "Track your order",
+    "intro": "Enter the phone number you used when requesting the service.",
+    "phone": "Phone number",
+    "search": "Find my orders",
+    "searching": "Searching…",
+    "empty": "No orders found for this phone number.",
+    "yourOrders": "Your orders",
+    "placedOn": "Placed on {{date}}"
+  },
+  "status": {
+    "pending": "Pending",
+    "reviewing": "Reviewing",
+    "accepted": "Accepted",
+    "rejected": "Rejected",
+    "in_progress": "In progress",
+    "completed": "Completed",
+    "cancelled": "Cancelled"
+  }
+}

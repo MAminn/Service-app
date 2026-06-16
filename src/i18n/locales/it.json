@@ -1,0 +1,88 @@
+{
+  "common": {
+    "appName": "Milano Home Services",
+    "currency": "€",
+    "loading": "Caricamento…",
+    "retry": "Riprova",
+    "errorTitle": "Si è verificato un errore",
+    "errorGeneric": "Impossibile caricare i dati. Riprova.",
+    "required": "Obbligatorio",
+    "optional": "facoltativo",
+    "cancel": "Annulla",
+    "back": "Indietro",
+    "select": "Seleziona…",
+    "from": "da"
+  },
+  "language": {
+    "label": "Lingua",
+    "it": "Italiano",
+    "en": "English",
+    "ar": "العربية"
+  },
+  "categories": {
+    "title": "Servizi",
+    "subtitle": "Scegli una categoria",
+    "empty": "Nessun servizio disponibile al momento."
+  },
+  "services": {
+    "title": "Servizi",
+    "empty": "Nessun servizio in questa categoria.",
+    "priceFrom": "da {{price}} {{unit}}"
+  },
+  "serviceDetail": {
+    "title": "Servizio",
+    "about": "Informazioni sul servizio",
+    "requestCta": "Richiedi servizio"
+  },
+  "request": {
+    "title": "Richiedi servizio",
+    "intro": "Nessun account necessario. Useremo il tuo numero di telefono per aggiornarti.",
+    "name": "Nome completo",
+    "phone": "Numero di telefono",
+    "email": "Email",
+    "address": "Indirizzo",
+    "zone": "Zona",
+    "details": "Dettagli del servizio",
+    "detailsPlaceholder": "Descrivi ciò di cui hai bisogno (facoltativo)",
+    "notes": "Note aggiuntive",
+    "notesPlaceholder": "Altro che dovremmo sapere (facoltativo)",
+    "submit": "Invia richiesta",
+    "submitting": "Invio in corso…",
+    "errors": {
+      "name": "Inserisci il tuo nome completo.",
+      "phone": "Inserisci un numero di telefono valido.",
+      "email": "Inserisci un indirizzo email valido.",
+      "address": "Inserisci il tuo indirizzo.",
+      "zone": "Seleziona una zona.",
+      "submit": "Impossibile inviare la richiesta. Riprova."
+    }
+  },
+  "confirmation": {
+    "title": "Richiesta ricevuta",
+    "heading": "Grazie!",
+    "message": "La tua richiesta è stata ricevuta ed è in attesa di revisione.",
+    "referenceLabel": "Riferimento ordine",
+    "trackHint": "Puoi seguire questo ordine in qualsiasi momento usando il tuo numero di telefono.",
+    "trackCta": "Segui il mio ordine",
+    "done": "Fatto"
+  },
+  "track": {
+    "title": "Segui il tuo ordine",
+    "intro": "Inserisci il numero di telefono usato per richiedere il servizio.",
+    "phone": "Numero di telefono",
+    "search": "Trova i miei ordini",
+    "searching": "Ricerca…",
+    "empty": "Nessun ordine trovato per questo numero di telefono.",
+    "yourOrders": "I tuoi ordini",
+    "placedOn": "Effettuato il {{date}}"
+  },
+  "status": {
+    "pending": "In attesa",
+    "reviewing": "In revisione",
+    "accepted": "Accettato",
+    "rejected": "Rifiutato",
+    "in_progress": "In corso",
+    "completed": "Completato",
+    "cancelled": "Annullato"
+  }
+}
