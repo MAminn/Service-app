@@ -12,7 +12,10 @@ async function fetchZones(): Promise<Zone[]> {
     .eq("active", true)
     .order("name", { ascending: true });
 
-  if (error) throw error;
+  if (error) {
+    console.error("[useZones] supabase error:", JSON.stringify(error));
+    throw error;
+  }
   return (data ?? []) as Zone[];
 }
 

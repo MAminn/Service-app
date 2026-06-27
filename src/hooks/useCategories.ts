@@ -12,7 +12,10 @@ async function fetchCategories(): Promise<ServiceCategory[]> {
     .eq("active", true)
     .order("sort_order", { ascending: true });
 
-  if (error) throw error;
+  if (error) {
+    console.error("[useCategories] supabase error:", JSON.stringify(error));
+    throw error;
+  }
   return (data ?? []) as ServiceCategory[];
 }
 

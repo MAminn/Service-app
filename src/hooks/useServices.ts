@@ -18,7 +18,10 @@ async function fetchServicesByCategory(categoryId: string): Promise<Service[]> {
     .eq("category_id", categoryId)
     .order("sort_order", { ascending: true });
 
-  if (error) throw error;
+  if (error) {
+    console.error("[useServices] supabase error:", JSON.stringify(error));
+    throw error;
+  }
   return (data ?? []) as Service[];
 }
 
@@ -31,7 +34,10 @@ async function fetchService(serviceId: string): Promise<Service | null> {
     .eq("id", serviceId)
     .maybeSingle();
 
-  if (error) throw error;
+  if (error) {
+    console.error("[useServices] supabase error:", JSON.stringify(error));
+    throw error;
+  }
   return (data as Service) ?? null;
 }
 

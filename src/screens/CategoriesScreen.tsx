@@ -16,7 +16,7 @@ export default function CategoriesScreen({
 }: ScreenProps<"Categories">) {
   const { t } = useTranslation();
   const localized = useLocalized();
-  const { data, isLoading, isError, refetch } = useCategories();
+  const { data, isLoading, isError, error, refetch } = useCategories();
 
   const renderItem = ({ item }: { item: ServiceCategory }) => (
     <Pressable
@@ -45,7 +45,7 @@ export default function CategoriesScreen({
       {isLoading ? (
         <Loading />
       ) : isError ? (
-        <ErrorView onRetry={refetch} />
+        <ErrorView onRetry={refetch} error={error} />
       ) : (
         <FlatList
           data={data}

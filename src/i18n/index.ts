@@ -38,6 +38,7 @@ i18n.use(initReactI18next).init({
   lng: detectDeviceLocale(),
   fallbackLng: DEFAULT_LOCALE,
   supportedLngs: SUPPORTED_LOCALES,
+  compatibilityJSON: "v3",
   interpolation: { escapeValue: false },
   returnNull: false,
 });

@@ -5,6 +5,22 @@ import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
 import theme from "../theme/theme";
 import Button from "./Button";
 
+/** Dev-only: best-effort human-readable detail from an unknown error value. */
+function formatErrorDetail(error: unknown): string {
+  if (error instanceof Error) return error.message;
+  if (typeof error === "string") return error;
+  if (error && typeof error === "object") {
+    const message = (error as { message?: unknown }).message;
+    if (typeof message === "string") return message;
+    try {
+      return JSON.stringify(error);
+    } catch {
+      return String(error);
+    }
+  }
+  return String(error);
+}
+
 export function Loading() {
   const { t } = useTranslation();
   return (
@@ -15,12 +31,20 @@ export function Loading() {
   );
 }
 
-export function ErrorView({ onRetry }: { onRetry?: () => void }) {
+export function ErrorView({
+  onRetry,
+  error,
+}: {
+  onRetry?: () => void;
+  error?: unknown;
+}) {
   const { t } = useTranslation();
+  const devDetail = __DEV__ && error != null ? formatErrorDetail(error) : null;
   return (
     <View style={styles.center}>
       <Text style={styles.title}>{t("common.errorTitle")}</Text>
       <Text style={styles.muted}>{t("common.errorGeneric")}</Text>
+      {devDetail && <Text style={styles.devDetail}>{devDetail}</Text>}
       {onRetry && (
         <View style={styles.action}>
           <Button
@@ -57,6 +81,12 @@ const styles = StyleSheet.create({
   },
   muted: {
     ...theme.typography.body,
+    color: theme.palette.textMuted,
+    textAlign: "center",
+    marginTop: theme.spacing.sm,
+  },
+  devDetail: {
+    ...theme.typography.caption,
     color: theme.palette.textMuted,
     textAlign: "center",
     marginTop: theme.spacing.sm,
