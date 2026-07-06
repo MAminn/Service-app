@@ -8,18 +8,44 @@ import { createClient } from "@supabase/supabase-js";
  * every table is protected by Row-Level Security. Never put the service-role
  * key in the app.
  */
-const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL;
-const supabaseAnonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY;
+/** Trim whitespace, strip surrounding quotes, and drop trailing CR/LF/space. */
+function normalizeEnv(value: string | undefined): string {
+  if (!value) return "";
+  return value
+    .trim()
+    .replace(/^['"]+|['"]+$/g, "")
+    .replace(/[\r\n\s]+$/g, "");
+}
 
-if (!supabaseUrl || !supabaseAnonKey) {
-  // Fail loud in development so misconfiguration is obvious.
-  console.warn(
-    "[supabase] Missing EXPO_PUBLIC_SUPABASE_URL or EXPO_PUBLIC_SUPABASE_ANON_KEY. " +
+const rawUrl = normalizeEnv(process.env.EXPO_PUBLIC_SUPABASE_URL);
+const supabaseUrl = rawUrl.replace(/\/+$/, "");
+const supabaseAnonKey = normalizeEnv(process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY);
+
+if (!supabaseUrl || !/^https?:\/\//.test(supabaseUrl)) {
+  throw new Error(
+    "[supabase] EXPO_PUBLIC_SUPABASE_URL is missing or invalid. " +
+      "It must be a full URL starting with http(s)://. " +
       "Copy .env.example to .env and fill in your project credentials.",
   );
 }
 
-export const supabase = createClient(supabaseUrl ?? "", supabaseAnonKey ?? "", {
+if (!supabaseAnonKey) {
+  throw new Error(
+    "[supabase] EXPO_PUBLIC_SUPABASE_ANON_KEY is missing. " +
+      "Copy .env.example to .env and fill in your project credentials.",
+  );
+}
+
+if (__DEV__) {
+  // Log the final origin (protocol + host) only; drop any path/query so
+  // nothing beyond the project ref host is exposed.
+  const maskedUrl = supabaseUrl.replace(/^(https?:\/\/[^/]+).*$/, "$1");
+  console.log(
+    `[supabase] url=${maskedUrl} anonKeyLength=${supabaseAnonKey.length}`,
+  );
+}
+
+export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   auth: {
     storage: AsyncStorage,
     autoRefreshToken: true,
