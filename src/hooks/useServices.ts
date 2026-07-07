@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 
+import { logCatalogError } from "../lib/logCatalogError";
 import { supabase } from "../lib/supabase";
 import type { Service } from "../types";
 
@@ -19,7 +20,7 @@ async function fetchServicesByCategory(categoryId: string): Promise<Service[]> {
     .order("sort_order", { ascending: true });
 
   if (error) {
-    console.error("[useServices] supabase error:", JSON.stringify(error));
+    logCatalogError("useServices", error);
     throw error;
   }
   return (data ?? []) as Service[];
@@ -35,7 +36,7 @@ async function fetchService(serviceId: string): Promise<Service | null> {
     .maybeSingle();
 
   if (error) {
-    console.error("[useServices] supabase error:", JSON.stringify(error));
+    logCatalogError("useServices", error);
     throw error;
   }
   return (data as Service) ?? null;

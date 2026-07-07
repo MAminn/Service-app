@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 
+import { logCatalogError } from "../lib/logCatalogError";
 import { supabase } from "../lib/supabase";
 import type { Zone } from "../types";
 
@@ -13,7 +14,7 @@ async function fetchZones(): Promise<Zone[]> {
     .order("name", { ascending: true });
 
   if (error) {
-    console.error("[useZones] supabase error:", JSON.stringify(error));
+    logCatalogError("useZones", error);
     throw error;
   }
   return (data ?? []) as Zone[];
