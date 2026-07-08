@@ -159,9 +159,7 @@ export default function AdminOrderDetailScreen({
 
         {transitions.length > 0 && (
           <>
-            <Text style={styles.sectionTitle}>
-              {t("admin.actions.title")}
-            </Text>
+            <Text style={styles.sectionTitle}>{t("admin.actions.title")}</Text>
             <View style={styles.card}>
               {transitions.map((target) => (
                 <View key={target} style={styles.actionButton}>
