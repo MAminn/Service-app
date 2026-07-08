@@ -85,5 +85,57 @@
     "in_progress": "In progress",
     "completed": "Completed",
     "cancelled": "Cancelled"
+  },
+  "admin": {
+    "entry": "Admin",
+    "login": {
+      "title": "Admin sign in",
+      "intro": "Staff-only area. Sign in with your credentials.",
+      "email": "Email",
+      "password": "Password",
+      "submit": "Sign in",
+      "signingIn": "Signing in…",
+      "errors": {
+        "email": "Please enter a valid email address.",
+        "password": "Please enter your password.",
+        "invalid": "Incorrect email or password.",
+        "unauthorized": "This account is not authorized to access the admin area.",
+        "generic": "Could not sign you in. Please try again."
+      }
+    },
+    "orders": {
+      "title": "Order queue",
+      "empty": "No orders yet.",
+      "signOut": "Sign out"
+    },
+    "orderDetail": {
+      "title": "Order detail",
+      "service": "Service",
+      "zone": "Zone",
+      "createdAt": "Created on",
+      "scheduledAt": "Scheduled for",
+      "payment": "Payment",
+      "paymentMethods": {
+        "cash": "Cash",
+        "online": "Online"
+      },
+      "paymentStatuses": {
+        "unpaid": "Unpaid",
+        "paid": "Paid",
+        "refunded": "Refunded"
+      },
+      "customer": "Customer",
+      "name": "Name",
+      "phone": "Phone",
+      "email": "Email",
+      "address": "Address",
+      "request": "Request",
+      "details": "Details",
+      "notes": "Notes"
+    },
+    "history": {
+      "title": "Status history",
+      "empty": "No history entries."
+    }
   }
 }

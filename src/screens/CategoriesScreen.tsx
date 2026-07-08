@@ -61,6 +61,12 @@ export default function CategoriesScreen({
         onPress={() => navigation.navigate("TrackOrder")}>
         <Text style={styles.trackLinkText}>{t("track.title")}</Text>
       </Pressable>
+      <Pressable
+        style={styles.adminLink}
+        onPress={() => navigation.navigate("AdminLogin")}
+        hitSlop={theme.spacing.sm}>
+        <Text style={styles.adminLinkText}>{t("admin.entry")}</Text>
+      </Pressable>
     </SafeAreaView>
   );
 }
@@ -102,5 +108,13 @@ const styles = StyleSheet.create({
   trackLinkText: {
     ...theme.typography.bodyStrong,
     color: theme.palette.primary,
+  },
+  adminLink: {
+    alignItems: "center",
+    paddingBottom: theme.spacing.md,
+  },
+  adminLinkText: {
+    ...theme.typography.caption,
+    color: theme.palette.textMuted,
   },
 });

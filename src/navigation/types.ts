@@ -13,6 +13,9 @@ export type RootStackParamList = {
   RequestForm: { serviceId: string; serviceName: I18nText; basePrice: number };
   Confirmation: { reference: string };
   TrackOrder: undefined;
+  AdminLogin: undefined;
+  AdminOrders: undefined;
+  AdminOrderDetail: { orderId: string };
 };
 
 export type ScreenProps<T extends keyof RootStackParamList> =

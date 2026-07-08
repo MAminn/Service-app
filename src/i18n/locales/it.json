@@ -85,5 +85,57 @@
     "in_progress": "In corso",
     "completed": "Completato",
     "cancelled": "Annullato"
+  },
+  "admin": {
+    "entry": "Admin",
+    "login": {
+      "title": "Accesso amministratore",
+      "intro": "Area riservata al personale. Accedi con le tue credenziali.",
+      "email": "Email",
+      "password": "Password",
+      "submit": "Accedi",
+      "signingIn": "Accesso in corso…",
+      "errors": {
+        "email": "Inserisci un indirizzo email valido.",
+        "password": "Inserisci la password.",
+        "invalid": "Email o password non corretti.",
+        "unauthorized": "Questo account non è autorizzato ad accedere all'area amministratore.",
+        "generic": "Impossibile completare l'accesso. Riprova."
+      }
+    },
+    "orders": {
+      "title": "Coda ordini",
+      "empty": "Nessun ordine al momento.",
+      "signOut": "Esci"
+    },
+    "orderDetail": {
+      "title": "Dettaglio ordine",
+      "service": "Servizio",
+      "zone": "Zona",
+      "createdAt": "Creato il",
+      "scheduledAt": "Programmato per",
+      "payment": "Pagamento",
+      "paymentMethods": {
+        "cash": "Contanti",
+        "online": "Online"
+      },
+      "paymentStatuses": {
+        "unpaid": "Non pagato",
+        "paid": "Pagato",
+        "refunded": "Rimborsato"
+      },
+      "customer": "Cliente",
+      "name": "Nome",
+      "phone": "Telefono",
+      "email": "Email",
+      "address": "Indirizzo",
+      "request": "Richiesta",
+      "details": "Dettagli",
+      "notes": "Note"
+    },
+    "history": {
+      "title": "Cronologia stato",
+      "empty": "Nessuna voce nella cronologia."
+    }
   }
 }

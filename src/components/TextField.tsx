@@ -13,6 +13,7 @@ interface Props {
   autoCapitalize?: "none" | "sentences" | "words";
   multiline?: boolean;
   required?: boolean;
+  secureTextEntry?: boolean;
 }
 
 export default function TextField({
@@ -25,6 +26,7 @@ export default function TextField({
   autoCapitalize = "sentences",
   multiline = false,
   required = false,
+  secureTextEntry = false,
 }: Props) {
   return (
     <View style={styles.wrapper}>
@@ -45,6 +47,7 @@ export default function TextField({
         keyboardType={keyboardType}
         autoCapitalize={autoCapitalize}
         multiline={multiline}
+        secureTextEntry={secureTextEntry}
         textAlignVertical={multiline ? "top" : "center"}
       />
       {!!error && <Text style={styles.error}>{error}</Text>}

@@ -80,6 +80,14 @@ export interface OrderStatusHistory {
   at: string;
 }
 
+export interface AdminUser {
+  id: string;
+  user_id: string;
+  role: string;
+  active: boolean;
+  created_at: string;
+}
+
 /** Payload to create a new order (customer request). */
 export interface NewOrderInput {
   service_id: string;

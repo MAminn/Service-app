@@ -3,6 +3,9 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 
 import theme from "../theme/theme";
+import AdminLoginScreen from "../screens/AdminLoginScreen";
+import AdminOrderDetailScreen from "../screens/AdminOrderDetailScreen";
+import AdminOrdersScreen from "../screens/AdminOrdersScreen";
 import CategoriesScreen from "../screens/CategoriesScreen";
 import ConfirmationScreen from "../screens/ConfirmationScreen";
 import RequestFormScreen from "../screens/RequestFormScreen";
@@ -53,6 +56,26 @@ export default function RootNavigator() {
         name='TrackOrder'
         component={TrackOrderScreen}
         options={{ title: t("track.title") }}
+      />
+      <Stack.Screen
+        name='AdminLogin'
+        component={AdminLoginScreen}
+        options={{ title: t("admin.login.title") }}
+      />
+      {/*
+        AdminOrders / AdminOrderDetail gate themselves: each redirects to
+        AdminLogin unless there is an authenticated active-admin session.
+        Server-side, RLS (is_admin()) is the actual enforcement.
+      */}
+      <Stack.Screen
+        name='AdminOrders'
+        component={AdminOrdersScreen}
+        options={{ title: t("admin.orders.title") }}
+      />
+      <Stack.Screen
+        name='AdminOrderDetail'
+        component={AdminOrderDetailScreen}
+        options={{ title: t("admin.orderDetail.title") }}
       />
     </Stack.Navigator>
   );
