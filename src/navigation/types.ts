@@ -16,6 +16,10 @@ export type RootStackParamList = {
   AdminLogin: undefined;
   AdminOrders: undefined;
   AdminOrderDetail: { orderId: string };
+  AdminCatalog: undefined;
+  AdminServiceEdit: { serviceId?: string };
+  AdminCategoryEdit: { categoryId?: string };
+  AdminZoneEdit: { zoneId?: string };
 };
 
 export type ScreenProps<T extends keyof RootStackParamList> =

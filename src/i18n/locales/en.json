@@ -154,6 +154,69 @@
       "title": "Status history",
       "empty": "No history entries.",
       "staff": "Staff"
+    },
+    "catalog": {
+      "title": "Catalog management",
+      "manage": "Manage",
+      "add": "+ Add",
+      "inactive": "Inactive",
+      "tabs": {
+        "categories": "Categories",
+        "services": "Services",
+        "zones": "Zones"
+      },
+      "empty": {
+        "categories": "No categories yet.",
+        "services": "No services yet.",
+        "zones": "No zones yet."
+      },
+      "service": {
+        "editTitle": "Edit service",
+        "newTitle": "New service"
+      },
+      "category": {
+        "editTitle": "Edit category",
+        "newTitle": "New category"
+      },
+      "zone": {
+        "editTitle": "Edit zone",
+        "newTitle": "New zone"
+      },
+      "fields": {
+        "category": "Category",
+        "nameIt": "Name (Italian)",
+        "nameEn": "Name (English)",
+        "nameAr": "Name (Arabic)",
+        "descriptionIt": "Description (Italian)",
+        "descriptionEn": "Description (English)",
+        "descriptionAr": "Description (Arabic)",
+        "basePrice": "Base price (€)",
+        "priceUnit": "Price unit",
+        "sortOrder": "Sort order",
+        "active": "Active",
+        "icon": "Icon (text or emoji)",
+        "zoneName": "Zone name",
+        "city": "City"
+      },
+      "save": "Save",
+      "saving": "Saving…",
+      "saved": "Changes saved.",
+      "errors": {
+        "nameIt": "Italian name is required.",
+        "price": "Enter a valid price (0 or more).",
+        "category": "Please select a category.",
+        "zoneName": "Please enter the zone name.",
+        "city": "Please enter the city.",
+        "save": "Could not save. Please try again."
+      },
+      "deactivate": {
+        "title": "Deactivate?",
+        "service": "This service will disappear from the customer app. You can reactivate it at any time.",
+        "category": "This category will disappear from the customer app. You can reactivate it at any time.",
+        "zone": "This zone will no longer be selectable by customers. You can reactivate it at any time.",
+        "confirm": "Deactivate",
+        "cancel": "Cancel"
+      }
     }
   }
 }

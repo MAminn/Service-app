@@ -3,9 +3,13 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 
 import theme from "../theme/theme";
+import AdminCatalogScreen from "../screens/AdminCatalogScreen";
+import AdminCategoryEditScreen from "../screens/AdminCategoryEditScreen";
 import AdminLoginScreen from "../screens/AdminLoginScreen";
 import AdminOrderDetailScreen from "../screens/AdminOrderDetailScreen";
 import AdminOrdersScreen from "../screens/AdminOrdersScreen";
+import AdminServiceEditScreen from "../screens/AdminServiceEditScreen";
+import AdminZoneEditScreen from "../screens/AdminZoneEditScreen";
 import CategoriesScreen from "../screens/CategoriesScreen";
 import ConfirmationScreen from "../screens/ConfirmationScreen";
 import RequestFormScreen from "../screens/RequestFormScreen";
@@ -76,6 +80,26 @@ export default function RootNavigator() {
         name='AdminOrderDetail'
         component={AdminOrderDetailScreen}
         options={{ title: t("admin.orderDetail.title") }}
+      />
+      <Stack.Screen
+        name='AdminCatalog'
+        component={AdminCatalogScreen}
+        options={{ title: t("admin.catalog.title") }}
+      />
+      <Stack.Screen
+        name='AdminServiceEdit'
+        component={AdminServiceEditScreen}
+        options={{ title: t("admin.catalog.service.editTitle") }}
+      />
+      <Stack.Screen
+        name='AdminCategoryEdit'
+        component={AdminCategoryEditScreen}
+        options={{ title: t("admin.catalog.category.editTitle") }}
+      />
+      <Stack.Screen
+        name='AdminZoneEdit'
+        component={AdminZoneEditScreen}
+        options={{ title: t("admin.catalog.zone.editTitle") }}
       />
     </Stack.Navigator>
   );

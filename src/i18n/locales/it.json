@@ -154,6 +154,69 @@
       "title": "Cronologia stato",
       "empty": "Nessuna voce nella cronologia.",
       "staff": "Staff"
+    },
+    "catalog": {
+      "title": "Gestione catalogo",
+      "manage": "Gestisci",
+      "add": "+ Aggiungi",
+      "inactive": "Non attivo",
+      "tabs": {
+        "categories": "Categorie",
+        "services": "Servizi",
+        "zones": "Zone"
+      },
+      "empty": {
+        "categories": "Nessuna categoria.",
+        "services": "Nessun servizio.",
+        "zones": "Nessuna zona."
+      },
+      "service": {
+        "editTitle": "Modifica servizio",
+        "newTitle": "Nuovo servizio"
+      },
+      "category": {
+        "editTitle": "Modifica categoria",
+        "newTitle": "Nuova categoria"
+      },
+      "zone": {
+        "editTitle": "Modifica zona",
+        "newTitle": "Nuova zona"
+      },
+      "fields": {
+        "category": "Categoria",
+        "nameIt": "Nome (italiano)",
+        "nameEn": "Nome (inglese)",
+        "nameAr": "Nome (arabo)",
+        "descriptionIt": "Descrizione (italiano)",
+        "descriptionEn": "Descrizione (inglese)",
+        "descriptionAr": "Descrizione (arabo)",
+        "basePrice": "Prezzo base (€)",
+        "priceUnit": "Unità di prezzo",
+        "sortOrder": "Ordine di visualizzazione",
+        "active": "Attivo",
+        "icon": "Icona (testo o emoji)",
+        "zoneName": "Nome zona",
+        "city": "Città"
+      },
+      "save": "Salva",
+      "saving": "Salvataggio…",
+      "saved": "Modifiche salvate.",
+      "errors": {
+        "nameIt": "Il nome in italiano è obbligatorio.",
+        "price": "Inserisci un prezzo valido (0 o superiore).",
+        "category": "Seleziona una categoria.",
+        "zoneName": "Inserisci il nome della zona.",
+        "city": "Inserisci la città.",
+        "save": "Impossibile salvare. Riprova."
+      },
+      "deactivate": {
+        "title": "Disattivare?",
+        "service": "Questo servizio non sarà più visibile nell'app clienti. Potrai riattivarlo in qualsiasi momento.",
+        "category": "Questa categoria non sarà più visibile nell'app clienti. Potrai riattivarla in qualsiasi momento.",
+        "zone": "Questa zona non sarà più selezionabile dai clienti. Potrai riattivarla in qualsiasi momento.",
+        "confirm": "Disattiva",
+        "cancel": "Annulla"
+      }
     }
   }
 }

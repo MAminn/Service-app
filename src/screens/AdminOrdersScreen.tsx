@@ -48,9 +48,16 @@ export default function AdminOrdersScreen({
       title: t("admin.orders.title"),
       headerBackVisible: false,
       headerRight: () => (
-        <Pressable onPress={onSignOut} hitSlop={theme.spacing.sm}>
-          <Text style={styles.signOut}>{t("admin.orders.signOut")}</Text>
-        </Pressable>
+        <View style={styles.headerActions}>
+          <Pressable
+            onPress={() => navigation.navigate("AdminCatalog")}
+            hitSlop={theme.spacing.sm}>
+            <Text style={styles.signOut}>{t("admin.catalog.manage")}</Text>
+          </Pressable>
+          <Pressable onPress={onSignOut} hitSlop={theme.spacing.sm}>
+            <Text style={styles.signOut}>{t("admin.orders.signOut")}</Text>
+          </Pressable>
+        </View>
       ),
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -108,6 +115,11 @@ const styles = StyleSheet.create({
     padding: theme.spacing.lg,
     gap: theme.spacing.md,
     flexGrow: 1,
+  },
+  headerActions: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: theme.spacing.lg,
   },
   signOut: {
     ...theme.typography.bodyStrong,
