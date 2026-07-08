@@ -133,9 +133,27 @@
       "details": "Dettagli",
       "notes": "Note"
     },
+    "actions": {
+      "title": "Azioni",
+      "review": "Avvia revisione",
+      "accept": "Accetta",
+      "reject": "Rifiuta",
+      "startWork": "Avvia lavoro",
+      "complete": "Completa",
+      "cancel": "Annulla ordine",
+      "confirmTitle": "Sei sicuro?",
+      "confirm": {
+        "rejected": "Rifiutare questo ordine? L'operazione non può essere annullata.",
+        "cancelled": "Annullare questo ordine? L'operazione non può essere annullata."
+      },
+      "confirmYes": "Conferma",
+      "confirmNo": "Indietro",
+      "error": "Impossibile aggiornare lo stato dell'ordine. Riprova."
+    },
     "history": {
       "title": "Cronologia stato",
-      "empty": "Nessuna voce nella cronologia."
+      "empty": "Nessuna voce nella cronologia.",
+      "staff": "Staff"
     }
   }
 }

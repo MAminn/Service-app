@@ -1,17 +1,35 @@
 import React, { useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import { Alert, ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+import Button from "../components/Button";
 import StatusBadge from "../components/StatusBadge";
 import { ErrorView, Loading } from "../components/States";
 import { useAdminOrder } from "../hooks/useAdminOrders";
 import { useAuth, useIsAdmin } from "../hooks/useAuth";
 import { useOrderHistory } from "../hooks/useOrderHistory";
+import { useUpdateOrderStatus } from "../hooks/useUpdateOrderStatus";
 import { useLocalized } from "../i18n/useLocalized";
 import { formatDateTime } from "../lib/format";
+import {
+  DESTRUCTIVE_TRANSITIONS,
+  allowedTransitions,
+} from "../lib/orderTransitions";
 import theme from "../theme/theme";
 import type { ScreenProps } from "../navigation/types";
+import type { OrderStatus } from "../types";
+
+/** i18n label key under admin.actions.* for each target status. */
+const ACTION_LABEL: Record<OrderStatus, string> = {
+  pending: "pending",
+  reviewing: "review",
+  accepted: "accept",
+  rejected: "reject",
+  in_progress: "startWork",
+  completed: "complete",
+  cancelled: "cancel",
+};
 
 function Row({ label, value }: { label: string; value: string }) {
   return (
@@ -33,6 +51,7 @@ export default function AdminOrderDetailScreen({
   const isAdminQuery = useIsAdmin(session?.user.id);
   const order = useAdminOrder(orderId);
   const history = useOrderHistory(orderId);
+  const updateStatus = useUpdateOrderStatus();
 
   const isAuthorized = !!session && isAdminQuery.data === true;
 
@@ -52,6 +71,27 @@ export default function AdminOrderDetailScreen({
 
   const o = order.data;
   const locale = i18n.language;
+  const transitions = allowedTransitions(o.status);
+
+  const fireTransition = (newStatus: OrderStatus) => {
+    const mutate = () => updateStatus.mutate({ orderId, newStatus });
+    if (DESTRUCTIVE_TRANSITIONS.has(newStatus)) {
+      Alert.alert(
+        t("admin.actions.confirmTitle"),
+        t(`admin.actions.confirm.${newStatus}`),
+        [
+          { text: t("admin.actions.confirmNo"), style: "cancel" },
+          {
+            text: t("admin.actions.confirmYes"),
+            style: "destructive",
+            onPress: mutate,
+          },
+        ],
+      );
+    } else {
+      mutate();
+    }
+  };
 
   return (
     <SafeAreaView style={styles.safe} edges={["left", "right", "bottom"]}>
@@ -117,6 +157,42 @@ export default function AdminOrderDetailScreen({
           </>
         )}
 
+        {transitions.length > 0 && (
+          <>
+            <Text style={styles.sectionTitle}>
+              {t("admin.actions.title")}
+            </Text>
+            <View style={styles.card}>
+              {transitions.map((target) => (
+                <View key={target} style={styles.actionButton}>
+                  <Button
+                    label={t(`admin.actions.${ACTION_LABEL[target]}`)}
+                    variant={
+                      DESTRUCTIVE_TRANSITIONS.has(target)
+                        ? "secondary"
+                        : "primary"
+                    }
+                    loading={
+                      updateStatus.isPending &&
+                      updateStatus.variables?.newStatus === target
+                    }
+                    disabled={updateStatus.isPending}
+                    onPress={() => fireTransition(target)}
+                  />
+                </View>
+              ))}
+              {updateStatus.isError && (
+                <Text style={styles.actionError}>
+                  {t("admin.actions.error")}
+                  {__DEV__ && updateStatus.error instanceof Error
+                    ? `\n${updateStatus.error.message}`
+                    : null}
+                </Text>
+              )}
+            </View>
+          </>
+        )}
+
         <Text style={styles.sectionTitle}>{t("admin.history.title")}</Text>
         <View style={styles.card}>
           {history.isLoading ? (
@@ -134,9 +210,16 @@ export default function AdminOrderDetailScreen({
                   index > 0 && styles.historyRowBorder,
                 ]}>
                 <StatusBadge status={entry.status} />
-                <Text style={styles.historyDate}>
-                  {formatDateTime(entry.at, locale)}
-                </Text>
+                <View style={styles.historyMeta}>
+                  {entry.changed_by && (
+                    <Text style={styles.historyStaff}>
+                      {t("admin.history.staff")}
+                    </Text>
+                  )}
+                  <Text style={styles.historyDate}>
+                    {formatDateTime(entry.at, locale)}
+                  </Text>
+                </View>
               </View>
             ))
           )}
@@ -181,6 +264,13 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
   muted: { ...theme.typography.body, color: theme.palette.textMuted },
+  actionButton: { marginTop: theme.spacing.sm },
+  actionError: {
+    ...theme.typography.caption,
+    color: theme.palette.danger,
+    marginTop: theme.spacing.md,
+    textAlign: "center",
+  },
   historyRow: {
     flexDirection: "row",
     alignItems: "center",
@@ -190,6 +280,12 @@ const styles = StyleSheet.create({
   historyRowBorder: {
     borderTopWidth: 1,
     borderTopColor: theme.palette.border,
+  },
+  historyMeta: { alignItems: "flex-end" },
+  historyStaff: {
+    ...theme.typography.caption,
+    color: theme.palette.text,
+    fontWeight: "600",
   },
   historyDate: {
     ...theme.typography.caption,

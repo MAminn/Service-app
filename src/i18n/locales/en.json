@@ -133,9 +133,27 @@
       "details": "Details",
       "notes": "Notes"
     },
+    "actions": {
+      "title": "Actions",
+      "review": "Start review",
+      "accept": "Accept",
+      "reject": "Reject",
+      "startWork": "Start work",
+      "complete": "Complete",
+      "cancel": "Cancel order",
+      "confirmTitle": "Are you sure?",
+      "confirm": {
+        "rejected": "Reject this order? This cannot be undone.",
+        "cancelled": "Cancel this order? This cannot be undone."
+      },
+      "confirmYes": "Confirm",
+      "confirmNo": "Go back",
+      "error": "Could not update the order status. Please try again."
+    },
     "history": {
       "title": "Status history",
-      "empty": "No history entries."
+      "empty": "No history entries.",
+      "staff": "Staff"
     }
   }
 }
