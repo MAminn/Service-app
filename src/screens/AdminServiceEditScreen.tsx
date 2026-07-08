@@ -16,10 +16,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import Button from "../components/Button";
 import TextField from "../components/TextField";
 import { ErrorView, Loading } from "../components/States";
-import {
-  useAdminCategories,
-  useAdminServices,
-} from "../hooks/useAdminCatalog";
+import { useAdminCategories, useAdminServices } from "../hooks/useAdminCatalog";
 import { useAuth, useIsAdmin } from "../hooks/useAuth";
 import { useUpsertService } from "../hooks/useCatalogMutations";
 import { useLocalized } from "../i18n/useLocalized";
@@ -266,9 +263,7 @@ export default function AdminServiceEditScreen({
           />
 
           <View style={styles.switchRow}>
-            <Text style={styles.label}>
-              {t("admin.catalog.fields.active")}
-            </Text>
+            <Text style={styles.label}>{t("admin.catalog.fields.active")}</Text>
             <Switch value={active} onValueChange={onToggleActive} />
           </View>
 

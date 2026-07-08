@@ -25,7 +25,9 @@ function InactiveBadge() {
   const { t } = useTranslation();
   return (
     <View style={styles.inactiveBadge}>
-      <Text style={styles.inactiveBadgeText}>{t("admin.catalog.inactive")}</Text>
+      <Text style={styles.inactiveBadgeText}>
+        {t("admin.catalog.inactive")}
+      </Text>
     </View>
   );
 }
