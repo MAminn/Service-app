@@ -6,7 +6,12 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 import Button from "../components/Button";
 import TextField from "../components/TextField";
-import { fetchIsAdmin, isAdminKey, useAuth, useIsAdmin } from "../hooks/useAuth";
+import {
+  fetchIsAdmin,
+  isAdminKey,
+  useAuth,
+  useIsAdmin,
+} from "../hooks/useAuth";
 import { isNonEmpty, isValidEmail } from "../lib/validation";
 import theme from "../theme/theme";
 import type { ScreenProps } from "../navigation/types";
