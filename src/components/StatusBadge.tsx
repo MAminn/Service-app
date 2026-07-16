@@ -3,9 +3,11 @@ import { useTranslation } from "react-i18next";
 import { StyleSheet, Text, View } from "react-native";
 
 import theme from "../theme/theme";
-import type { OrderStatus } from "../types";
+import type { ComplaintStatus, OrderStatus } from "../types";
 
-const COLOR: Record<OrderStatus, string> = {
+type BadgeStatus = OrderStatus | ComplaintStatus;
+
+const COLOR: Record<BadgeStatus, string> = {
   pending: theme.palette.statusPending,
   reviewing: theme.palette.statusReviewing,
   accepted: theme.palette.statusAccepted,
@@ -13,11 +15,27 @@ const COLOR: Record<OrderStatus, string> = {
   in_progress: theme.palette.statusInProgress,
   completed: theme.palette.statusCompleted,
   cancelled: theme.palette.statusCancelled,
+  // Complaint statuses — distinct colors, reusing existing theme tokens.
+  open: theme.palette.warning,
+  in_review: theme.palette.primary,
+  resolved: theme.palette.success,
+  dismissed: theme.palette.textMuted,
 };
 
-export default function StatusBadge({ status }: { status: OrderStatus }) {
+/** Complaint status values (no overlap with order status values). */
+const COMPLAINT_STATUSES: ReadonlySet<string> = new Set([
+  "open",
+  "in_review",
+  "resolved",
+  "dismissed",
+]);
+
+export default function StatusBadge({ status }: { status: BadgeStatus }) {
   const { t } = useTranslation();
   const color = COLOR[status];
+  const labelKey = COMPLAINT_STATUSES.has(status)
+    ? `complaints.status.${status}`
+    : `status.${status}`;
 
   return (
     <View
@@ -26,7 +44,7 @@ export default function StatusBadge({ status }: { status: OrderStatus }) {
         { backgroundColor: `${color}1A`, borderColor: color },
       ]}>
       <View style={[styles.dot, { backgroundColor: color }]} />
-      <Text style={[styles.label, { color }]}>{t(`status.${status}`)}</Text>
+      <Text style={[styles.label, { color }]}>{t(labelKey)}</Text>
     </View>
   );
 }

@@ -5,6 +5,8 @@ import { useTranslation } from "react-i18next";
 import theme from "../theme/theme";
 import AdminCatalogScreen from "../screens/AdminCatalogScreen";
 import AdminCategoryEditScreen from "../screens/AdminCategoryEditScreen";
+import AdminComplaintDetailScreen from "../screens/AdminComplaintDetailScreen";
+import AdminComplaintsScreen from "../screens/AdminComplaintsScreen";
 import AdminLoginScreen from "../screens/AdminLoginScreen";
 import AdminOrderDetailScreen from "../screens/AdminOrderDetailScreen";
 import AdminOrdersScreen from "../screens/AdminOrdersScreen";
@@ -100,6 +102,16 @@ export default function RootNavigator() {
         name='AdminZoneEdit'
         component={AdminZoneEditScreen}
         options={{ title: t("admin.catalog.zone.editTitle") }}
+      />
+      <Stack.Screen
+        name='AdminComplaints'
+        component={AdminComplaintsScreen}
+        options={{ title: t("admin.complaints.title") }}
+      />
+      <Stack.Screen
+        name='AdminComplaintDetail'
+        component={AdminComplaintDetailScreen}
+        options={{ title: t("admin.complaints.detailTitle") }}
       />
     </Stack.Navigator>
   );

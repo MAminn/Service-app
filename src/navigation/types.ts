@@ -20,6 +20,8 @@ export type RootStackParamList = {
   AdminServiceEdit: { serviceId?: string };
   AdminCategoryEdit: { categoryId?: string };
   AdminZoneEdit: { zoneId?: string };
+  AdminComplaints: undefined;
+  AdminComplaintDetail: { complaintId: string };
 };
 
 export type ScreenProps<T extends keyof RootStackParamList> =

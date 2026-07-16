@@ -21,6 +21,8 @@ export type OrderStatus =
 export type PaymentMethod = "cash" | "online";
 export type PaymentStatus = "unpaid" | "paid" | "refunded";
 
+export type ComplaintStatus = "open" | "in_review" | "resolved" | "dismissed";
+
 export interface ServiceCategory {
   id: string;
   name: I18nText;
@@ -78,6 +80,16 @@ export interface OrderStatusHistory {
   status: OrderStatus;
   changed_by: string | null;
   at: string;
+}
+
+export interface Complaint {
+  id: string;
+  order_id: string;
+  message: string;
+  status: ComplaintStatus;
+  admin_note: string | null;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface AdminUser {

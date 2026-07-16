@@ -86,8 +86,59 @@
     "completed": "Completed",
     "cancelled": "Cancelled"
   },
+  "complaints": {
+    "report": "Report an issue",
+    "modalTitle": "Report an issue",
+    "forOrder": "Order {{reference}}",
+    "message": "Message",
+    "messagePlaceholder": "Describe the issue you experienced…",
+    "submit": "Submit complaint",
+    "submitting": "Submitting…",
+    "submitted": "Complaint submitted. We will look into it as soon as possible.",
+    "yourComplaints": "Your complaints",
+    "adminNote": "Team response",
+    "status": {
+      "open": "Open",
+      "in_review": "In review",
+      "resolved": "Resolved",
+      "dismissed": "Dismissed"
+    },
+    "errors": {
+      "message": "Please enter a message.",
+      "limitReached": "You have reached the complaint limit for this order.",
+      "orderNotFound": "Order not found for this phone number.",
+      "submit": "Could not submit the complaint. Please try again."
+    }
+  },
   "admin": {
     "entry": "Admin",
+    "complaints": {
+      "entry": "Complaints",
+      "title": "Complaints",
+      "detailTitle": "Complaint detail",
+      "empty": "No complaints at the moment.",
+      "customer": "Customer",
+      "message": "Message",
+      "receivedAt": "Received on",
+      "updatedAt": "Updated on",
+      "note": "Note for the customer",
+      "notePlaceholder": "Add a note visible to the customer (optional)…",
+      "viewOrder": "Open order",
+      "actions": {
+        "title": "Actions",
+        "in_review": "Start review",
+        "resolved": "Resolve",
+        "dismissed": "Dismiss",
+        "confirmTitle": "Are you sure?",
+        "confirm": {
+          "resolved": "Mark this complaint as resolved? This cannot be undone.",
+          "dismissed": "Dismiss this complaint? This cannot be undone."
+        },
+        "confirmYes": "Confirm",
+        "confirmNo": "Back",
+        "error": "Could not update the complaint. Please try again."
+      }
+    },
     "login": {
       "title": "Admin sign in",
       "intro": "Staff-only area. Sign in with your credentials.",

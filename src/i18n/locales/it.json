@@ -86,8 +86,59 @@
     "completed": "Completato",
     "cancelled": "Annullato"
   },
+  "complaints": {
+    "report": "Segnala un problema",
+    "modalTitle": "Segnala un problema",
+    "forOrder": "Ordine {{reference}}",
+    "message": "Messaggio",
+    "messagePlaceholder": "Descrivi il problema riscontrato…",
+    "submit": "Invia reclamo",
+    "submitting": "Invio in corso…",
+    "submitted": "Reclamo inviato. Lo esamineremo al più presto.",
+    "yourComplaints": "I tuoi reclami",
+    "adminNote": "Risposta del team",
+    "status": {
+      "open": "Aperto",
+      "in_review": "In esame",
+      "resolved": "Risolto",
+      "dismissed": "Respinto"
+    },
+    "errors": {
+      "message": "Inserisci un messaggio.",
+      "limitReached": "Hai raggiunto il numero massimo di reclami per questo ordine.",
+      "orderNotFound": "Ordine non trovato per questo numero di telefono.",
+      "submit": "Impossibile inviare il reclamo. Riprova."
+    }
+  },
   "admin": {
     "entry": "Admin",
+    "complaints": {
+      "entry": "Reclami",
+      "title": "Reclami",
+      "detailTitle": "Dettaglio reclamo",
+      "empty": "Nessun reclamo al momento.",
+      "customer": "Cliente",
+      "message": "Messaggio",
+      "receivedAt": "Ricevuto il",
+      "updatedAt": "Aggiornato il",
+      "note": "Nota per il cliente",
+      "notePlaceholder": "Aggiungi una nota visibile al cliente (facoltativa)…",
+      "viewOrder": "Apri ordine",
+      "actions": {
+        "title": "Azioni",
+        "in_review": "Avvia esame",
+        "resolved": "Risolvi",
+        "dismissed": "Respingi",
+        "confirmTitle": "Sei sicuro?",
+        "confirm": {
+          "resolved": "Contrassegnare questo reclamo come risolto? L'operazione non può essere annullata.",
+          "dismissed": "Respingere questo reclamo? L'operazione non può essere annullata."
+        },
+        "confirmYes": "Conferma",
+        "confirmNo": "Indietro",
+        "error": "Impossibile aggiornare il reclamo. Riprova."
+      }
+    },
     "login": {
       "title": "Accesso amministratore",
       "intro": "Area riservata al personale. Accedi con le tue credenziali.",

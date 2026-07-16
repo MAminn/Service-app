@@ -1,4 +1,3 @@
-import { useQueryClient } from "@tanstack/react-query";
 import React, { useEffect, useLayoutEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { FlatList, Pressable, StyleSheet, Text, View } from "react-native";
@@ -7,24 +6,21 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import StatusBadge from "../components/StatusBadge";
 import { EmptyState, ErrorView, Loading } from "../components/States";
 import {
-  useAdminOrders,
-  type AdminOrderListItem,
-} from "../hooks/useAdminOrders";
+  useAdminComplaints,
+  type AdminComplaint,
+} from "../hooks/useAdminComplaints";
 import { useAuth, useIsAdmin } from "../hooks/useAuth";
-import { useLocalized } from "../i18n/useLocalized";
 import { formatDateTime } from "../lib/format";
 import theme from "../theme/theme";
 import type { ScreenProps } from "../navigation/types";
 
-export default function AdminOrdersScreen({
+export default function AdminComplaintsScreen({
   navigation,
-}: ScreenProps<"AdminOrders">) {
+}: ScreenProps<"AdminComplaints">) {
   const { t, i18n } = useTranslation();
-  const localized = useLocalized();
-  const queryClient = useQueryClient();
-  const { session, isSessionLoading, signOut } = useAuth();
+  const { session, isSessionLoading } = useAuth();
   const isAdminQuery = useIsAdmin(session?.user.id);
-  const orders = useAdminOrders();
+  const complaints = useAdminComplaints();
 
   const isAuthorized = !!session && isAdminQuery.data === true;
 
@@ -36,57 +32,29 @@ export default function AdminOrdersScreen({
     }
   }, [isSessionLoading, session, isAdminQuery.data, navigation]);
 
-  const onSignOut = async () => {
-    await signOut();
-    queryClient.removeQueries({ queryKey: ["adminOrders"] });
-    queryClient.removeQueries({ queryKey: ["orderHistory"] });
-    queryClient.removeQueries({ queryKey: ["isAdmin"] });
-    queryClient.removeQueries({ queryKey: ["admin"] }); // admin catalog + complaints
-  };
-
   useLayoutEffect(() => {
-    navigation.setOptions({
-      title: t("admin.orders.title"),
-      headerBackVisible: false,
-      headerRight: () => (
-        <View style={styles.headerActions}>
-          <Pressable
-            onPress={() => navigation.navigate("AdminComplaints")}
-            hitSlop={theme.spacing.sm}>
-            <Text style={styles.signOut}>{t("admin.complaints.entry")}</Text>
-          </Pressable>
-          <Pressable
-            onPress={() => navigation.navigate("AdminCatalog")}
-            hitSlop={theme.spacing.sm}>
-            <Text style={styles.signOut}>{t("admin.catalog.manage")}</Text>
-          </Pressable>
-          <Pressable onPress={onSignOut} hitSlop={theme.spacing.sm}>
-            <Text style={styles.signOut}>{t("admin.orders.signOut")}</Text>
-          </Pressable>
-        </View>
-      ),
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    navigation.setOptions({ title: t("admin.complaints.title") });
   }, [navigation, t]);
 
-  const renderItem = ({ item }: { item: AdminOrderListItem }) => (
+  const renderItem = ({ item }: { item: AdminComplaint }) => (
     <Pressable
       style={({ pressed }) => [styles.card, pressed && styles.cardPressed]}
       onPress={() =>
-        navigation.navigate("AdminOrderDetail", { orderId: item.id })
+        navigation.navigate("AdminComplaintDetail", { complaintId: item.id })
       }>
       <View style={styles.cardHeader}>
-        <Text style={styles.reference}>{item.reference}</Text>
+        <Text style={styles.reference}>
+          {item.orders?.reference ?? item.order_id}
+        </Text>
         <StatusBadge status={item.status} />
       </View>
-      {item.services && (
-        <Text style={styles.service}>{localized(item.services.name)}</Text>
+      {item.orders && (
+        <Text style={styles.customer}>{item.orders.customer_name}</Text>
       )}
-      <Text style={styles.customer}>
-        {item.customer_name} · {item.customer_phone}
+      <Text style={styles.message} numberOfLines={2}>
+        {item.message}
       </Text>
       <Text style={styles.meta}>
-        {item.zones ? `${item.zones.name} · ` : ""}
         {formatDateTime(item.created_at, i18n.language)}
       </Text>
     </Pressable>
@@ -96,19 +64,21 @@ export default function AdminOrdersScreen({
 
   return (
     <SafeAreaView style={styles.safe} edges={["left", "right", "bottom"]}>
-      {orders.isLoading ? (
+      {complaints.isLoading ? (
         <Loading />
-      ) : orders.isError ? (
-        <ErrorView onRetry={orders.refetch} error={orders.error} />
+      ) : complaints.isError ? (
+        <ErrorView onRetry={complaints.refetch} error={complaints.error} />
       ) : (
         <FlatList
-          data={orders.data}
+          data={complaints.data}
           keyExtractor={(item) => item.id}
           renderItem={renderItem}
           contentContainerStyle={styles.list}
-          refreshing={orders.isRefetching}
-          onRefresh={orders.refetch}
-          ListEmptyComponent={<EmptyState message={t("admin.orders.empty")} />}
+          refreshing={complaints.isRefetching}
+          onRefresh={complaints.refetch}
+          ListEmptyComponent={
+            <EmptyState message={t("admin.complaints.empty")} />
+          }
         />
       )}
     </SafeAreaView>
@@ -121,15 +91,6 @@ const styles = StyleSheet.create({
     padding: theme.spacing.lg,
     gap: theme.spacing.md,
     flexGrow: 1,
-  },
-  headerActions: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: theme.spacing.lg,
-  },
-  signOut: {
-    ...theme.typography.bodyStrong,
-    color: theme.palette.primary,
   },
   card: {
     backgroundColor: theme.palette.surface,
@@ -146,12 +107,12 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   reference: { ...theme.typography.bodyStrong, color: theme.palette.text },
-  service: {
+  customer: {
     ...theme.typography.body,
     color: theme.palette.text,
     marginTop: theme.spacing.sm,
   },
-  customer: {
+  message: {
     ...theme.typography.body,
     color: theme.palette.textMuted,
     marginTop: theme.spacing.xs,
