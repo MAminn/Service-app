@@ -21,7 +21,10 @@ import TextField from "../components/TextField";
 import { ErrorView, Loading } from "../components/States";
 import { useAdminCategories, useAdminServices } from "../hooks/useAdminCatalog";
 import { useAuth, useIsAdmin } from "../hooks/useAuth";
-import { useSetServiceImage, useUpsertService } from "../hooks/useCatalogMutations";
+import {
+  useSetServiceImage,
+  useUpsertService,
+} from "../hooks/useCatalogMutations";
 import { useLocalized } from "../i18n/useLocalized";
 import {
   deleteServiceImage,

@@ -38,9 +38,9 @@ export default function ServicesScreen({
           <Image
             source={{ uri: imageUrl }}
             style={styles.cardImage}
-            contentFit="cover"
+            contentFit='cover'
             transition={200}
-            cachePolicy="memory-disk"
+            cachePolicy='memory-disk'
           />
         ) : null}
         <View style={styles.cardRow}>

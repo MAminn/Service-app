@@ -38,9 +38,9 @@ export default function ServiceDetailScreen({
           <Image
             source={{ uri: imageUrl }}
             style={styles.image}
-            contentFit="cover"
+            contentFit='cover'
             transition={200}
-            cachePolicy="memory-disk"
+            cachePolicy='memory-disk'
           />
         ) : null}
         <Text style={styles.title}>{localized(service.name)}</Text>
