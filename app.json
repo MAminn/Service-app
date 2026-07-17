@@ -19,6 +19,14 @@
     "android": {
       "package": "com.milano.homeservices"
     },
-    "plugins": ["expo-localization"]
+    "plugins": [
+      "expo-localization",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Allow $(PRODUCT_NAME) to access your photos so you can set service images."
+        }
+      ]
+    ]
   }
 }

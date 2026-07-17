@@ -1,7 +1,10 @@
 import { Picker } from "@react-native-picker/picker";
+import * as ImagePicker from "expo-image-picker";
+import { Image } from "expo-image";
 import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
+  ActivityIndicator,
   Alert,
   KeyboardAvoidingView,
   Platform,
@@ -18,8 +21,14 @@ import TextField from "../components/TextField";
 import { ErrorView, Loading } from "../components/States";
 import { useAdminCategories, useAdminServices } from "../hooks/useAdminCatalog";
 import { useAuth, useIsAdmin } from "../hooks/useAuth";
-import { useUpsertService } from "../hooks/useCatalogMutations";
+import { useSetServiceImage, useUpsertService } from "../hooks/useCatalogMutations";
 import { useLocalized } from "../i18n/useLocalized";
+import {
+  deleteServiceImage,
+  getServiceImageUrl,
+  serviceImagePath,
+  uploadServiceImage,
+} from "../lib/serviceImages";
 import theme from "../theme/theme";
 import type { ScreenProps } from "../navigation/types";
 
@@ -41,6 +50,7 @@ export default function AdminServiceEditScreen({
   const categories = useAdminCategories();
   const services = useAdminServices();
   const upsert = useUpsertService();
+  const setServiceImage = useSetServiceImage();
 
   const [categoryId, setCategoryId] = useState("");
   const [nameIt, setNameIt] = useState("");
@@ -54,6 +64,8 @@ export default function AdminServiceEditScreen({
   const [sortOrder, setSortOrder] = useState("0");
   const [active, setActive] = useState(true);
   const [errors, setErrors] = useState<Errors>({});
+  const [imageBusy, setImageBusy] = useState(false);
+  const [imageError, setImageError] = useState<string | null>(null);
 
   const isAuthorized = !!session && isAdminQuery.data === true;
 
@@ -144,6 +156,69 @@ export default function AdminServiceEditScreen({
     );
   };
 
+  const currentImageUrl = getServiceImageUrl(existing?.image_path);
+
+  const onChooseImage = async () => {
+    if (!serviceId) return;
+    setImageError(null);
+    try {
+      const perm = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (!perm.granted) {
+        Alert.alert(t("admin.catalog.image.permissionDenied"));
+        return;
+      }
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: "images",
+        allowsEditing: true,
+        aspect: [16, 9],
+        quality: 0.7,
+        base64: true,
+      });
+      if (result.canceled) return;
+      const asset = result.assets[0];
+      if (!asset?.base64) {
+        setImageError(t("admin.catalog.image.uploadFailed"));
+        return;
+      }
+      setImageBusy(true);
+      const path = await uploadServiceImage(serviceId, asset.base64);
+      await setServiceImage.mutateAsync({ serviceId, imagePath: path });
+    } catch {
+      setImageError(t("admin.catalog.image.uploadFailed"));
+    } finally {
+      setImageBusy(false);
+    }
+  };
+
+  const onRemoveImage = () => {
+    if (!serviceId) return;
+    Alert.alert(
+      t("admin.catalog.image.removeTitle"),
+      t("admin.catalog.image.removeMessage"),
+      [
+        { text: t("admin.catalog.image.cancel"), style: "cancel" },
+        {
+          text: t("admin.catalog.image.removeConfirm"),
+          style: "destructive",
+          onPress: async () => {
+            setImageError(null);
+            setImageBusy(true);
+            try {
+              await deleteServiceImage(
+                existing?.image_path ?? serviceImagePath(serviceId),
+              );
+              await setServiceImage.mutateAsync({ serviceId, imagePath: null });
+            } catch {
+              setImageError(t("admin.catalog.image.uploadFailed"));
+            } finally {
+              setImageBusy(false);
+            }
+          },
+        },
+      ],
+    );
+  };
+
   // Deactivating hides the item from customers — confirm first.
   const onToggleActive = (next: boolean) => {
     if (next) {
@@ -172,6 +247,70 @@ export default function AdminServiceEditScreen({
         <ScrollView
           contentContainerStyle={styles.content}
           keyboardShouldPersistTaps='handled'>
+          <View style={styles.field}>
+            <Text style={styles.label}>{t("admin.catalog.image.title")}</Text>
+            {serviceId ? (
+              <>
+                {currentImageUrl ? (
+                  <Image
+                    source={{ uri: currentImageUrl }}
+                    style={styles.imagePreview}
+                    contentFit='cover'
+                    transition={200}
+                    cachePolicy='memory-disk'
+                  />
+                ) : (
+                  <View style={[styles.imagePreview, styles.imagePlaceholder]}>
+                    <Text style={styles.placeholderText}>
+                      {t("admin.catalog.image.none")}
+                    </Text>
+                  </View>
+                )}
+                <View style={styles.imageActions}>
+                  <View style={styles.imageActionButton}>
+                    <Button
+                      label={
+                        currentImageUrl
+                          ? t("admin.catalog.image.replace")
+                          : t("admin.catalog.image.choose")
+                      }
+                      onPress={onChooseImage}
+                      disabled={imageBusy}
+                    />
+                  </View>
+                  {currentImageUrl ? (
+                    <View style={styles.imageActionButton}>
+                      <Button
+                        label={t("admin.catalog.image.remove")}
+                        onPress={onRemoveImage}
+                        variant='secondary'
+                        disabled={imageBusy}
+                      />
+                    </View>
+                  ) : null}
+                </View>
+                {imageBusy ? (
+                  <View style={styles.busyRow}>
+                    <ActivityIndicator
+                      size='small'
+                      color={theme.palette.primary}
+                    />
+                    <Text style={styles.busyText}>
+                      {t("admin.catalog.image.uploading")}
+                    </Text>
+                  </View>
+                ) : null}
+                {imageError ? (
+                  <Text style={styles.error}>{imageError}</Text>
+                ) : null}
+              </>
+            ) : (
+              <Text style={styles.hint}>
+                {t("admin.catalog.image.saveFirst")}
+              </Text>
+            )}
+          </View>
+
           <View style={styles.field}>
             <Text style={styles.label}>
               {t("admin.catalog.fields.category")}
@@ -314,6 +453,42 @@ const styles = StyleSheet.create({
     ...theme.typography.caption,
     color: theme.palette.danger,
     marginTop: theme.spacing.xs,
+  },
+  imagePreview: {
+    width: "100%",
+    aspectRatio: 16 / 9,
+    borderRadius: theme.radius.md,
+    backgroundColor: theme.palette.surface,
+    marginBottom: theme.spacing.md,
+  },
+  imagePlaceholder: {
+    alignItems: "center",
+    justifyContent: "center",
+    borderWidth: 1,
+    borderColor: theme.palette.border,
+  },
+  placeholderText: {
+    ...theme.typography.caption,
+    color: theme.palette.textMuted,
+  },
+  imageActions: {
+    flexDirection: "row",
+    gap: theme.spacing.md,
+  },
+  imageActionButton: { flex: 1 },
+  busyRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: theme.spacing.sm,
+    marginTop: theme.spacing.sm,
+  },
+  busyText: {
+    ...theme.typography.caption,
+    color: theme.palette.textMuted,
+  },
+  hint: {
+    ...theme.typography.caption,
+    color: theme.palette.textMuted,
   },
   switchRow: {
     flexDirection: "row",

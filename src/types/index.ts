@@ -41,6 +41,7 @@ export interface Service {
   price_unit: string;
   active: boolean;
   sort_order: number;
+  image_path: string | null;
   created_at: string;
 }
 

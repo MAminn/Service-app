@@ -71,6 +71,18 @@ async function upsertService(input: UpsertServiceInput): Promise<Service> {
   return data as Service;
 }
 
+async function setServiceImage(input: {
+  serviceId: string;
+  imagePath: string | null;
+}): Promise<Service> {
+  const { data, error } = await supabase.rpc("admin_set_service_image", {
+    p_service_id: input.serviceId,
+    p_image_path: input.imagePath,
+  });
+  if (error) throw error;
+  return data as Service;
+}
+
 async function upsertCategory(
   input: UpsertCategoryInput,
 ): Promise<ServiceCategory> {
@@ -106,6 +118,14 @@ export function useUpsertService() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: upsertService,
+    onSuccess: () => invalidateServices(queryClient),
+  });
+}
+
+export function useSetServiceImage() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: setServiceImage,
     onSuccess: () => invalidateServices(queryClient),
   });
 }

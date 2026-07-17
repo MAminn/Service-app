@@ -13,7 +13,7 @@ async function fetchServicesByCategory(categoryId: string): Promise<Service[]> {
   const { data, error } = await supabase
     .from("services")
     .select(
-      "id, category_id, name, description, base_price, price_unit, active, sort_order, created_at",
+      "id, category_id, name, description, base_price, price_unit, active, sort_order, image_path, created_at",
     )
     .eq("active", true)
     .eq("category_id", categoryId)
@@ -30,7 +30,7 @@ async function fetchService(serviceId: string): Promise<Service | null> {
   const { data, error } = await supabase
     .from("services")
     .select(
-      "id, category_id, name, description, base_price, price_unit, active, sort_order, created_at",
+      "id, category_id, name, description, base_price, price_unit, active, sort_order, image_path, created_at",
     )
     .eq("id", serviceId)
     .maybeSingle();

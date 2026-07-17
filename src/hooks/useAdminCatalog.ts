@@ -45,7 +45,7 @@ async function fetchAdminServices(
   let query = supabase
     .from("services")
     .select(
-      "id, category_id, name, description, base_price, price_unit, active, sort_order, created_at, service_categories(name)",
+      "id, category_id, name, description, base_price, price_unit, active, sort_order, image_path, created_at, service_categories(name)",
     )
     .order("sort_order", { ascending: true });
 

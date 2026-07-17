@@ -260,6 +260,21 @@
         "city": "Please enter the city.",
         "save": "Could not save. Please try again."
       },
+      "image": {
+        "title": "Image",
+        "none": "No image",
+        "choose": "Choose image",
+        "replace": "Replace image",
+        "remove": "Remove image",
+        "uploading": "Uploading…",
+        "saveFirst": "Save the service first, then add an image.",
+        "removeTitle": "Remove image?",
+        "removeMessage": "The service image will be removed from the customer app.",
+        "removeConfirm": "Remove",
+        "cancel": "Cancel",
+        "permissionDenied": "Photo library access is needed to choose an image. Enable it in Settings.",
+        "uploadFailed": "Could not update the image. Please try again."
+      },
       "deactivate": {
         "title": "Deactivate?",
         "service": "This service will disappear from the customer app. You can reactivate it at any time.",
