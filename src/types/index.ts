@@ -29,6 +29,7 @@ export interface ServiceCategory {
   icon: string | null;
   sort_order: number;
   active: boolean;
+  image_path: string | null;
   created_at: string;
 }
 

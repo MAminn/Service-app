@@ -8,7 +8,7 @@ import { EmptyState, ErrorView, Loading } from "../components/States";
 import { useServices } from "../hooks/useServices";
 import { useLocalized } from "../i18n/useLocalized";
 import { formatPrice } from "../lib/format";
-import { getServiceImageUrl } from "../lib/serviceImages";
+import { getServiceImageUrl } from "../lib/catalogImages";
 import theme from "../theme/theme";
 import type { ScreenProps } from "../navigation/types";
 import type { Service } from "../types";

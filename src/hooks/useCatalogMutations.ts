@@ -83,6 +83,18 @@ async function setServiceImage(input: {
   return data as Service;
 }
 
+async function setCategoryImage(input: {
+  categoryId: string;
+  imagePath: string | null;
+}): Promise<ServiceCategory> {
+  const { data, error } = await supabase.rpc("admin_set_category_image", {
+    p_category_id: input.categoryId,
+    p_image_path: input.imagePath,
+  });
+  if (error) throw error;
+  return data as ServiceCategory;
+}
+
 async function upsertCategory(
   input: UpsertCategoryInput,
 ): Promise<ServiceCategory> {
@@ -127,6 +139,17 @@ export function useSetServiceImage() {
   return useMutation({
     mutationFn: setServiceImage,
     onSuccess: () => invalidateServices(queryClient),
+  });
+}
+
+export function useSetCategoryImage() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: setCategoryImage,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: adminCategoriesKey });
+      queryClient.invalidateQueries({ queryKey: categoriesKey });
+    },
   });
 }
 

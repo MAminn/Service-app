@@ -1,12 +1,14 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { FlatList, Pressable, StyleSheet, Text, View } from "react-native";
+import { Image } from "expo-image";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import LanguageSwitcher from "../components/LanguageSwitcher";
 import { EmptyState, ErrorView, Loading } from "../components/States";
 import { useCategories } from "../hooks/useCategories";
 import { useLocalized } from "../i18n/useLocalized";
+import { getCatalogImageUrl } from "../lib/catalogImages";
 import theme from "../theme/theme";
 import type { ScreenProps } from "../navigation/types";
 import type { ServiceCategory } from "../types";
@@ -18,19 +20,33 @@ export default function CategoriesScreen({
   const localized = useLocalized();
   const { data, isLoading, isError, error, refetch } = useCategories();
 
-  const renderItem = ({ item }: { item: ServiceCategory }) => (
-    <Pressable
-      style={({ pressed }) => [styles.card, pressed && styles.cardPressed]}
-      onPress={() =>
-        navigation.navigate("Services", {
-          categoryId: item.id,
-          categoryName: item.name,
-        })
-      }>
-      <Text style={styles.cardTitle}>{localized(item.name)}</Text>
-      <Text style={styles.chevron}>›</Text>
-    </Pressable>
-  );
+  const renderItem = ({ item }: { item: ServiceCategory }) => {
+    const imageUrl = getCatalogImageUrl(item.image_path);
+    return (
+      <Pressable
+        style={({ pressed }) => [styles.card, pressed && styles.cardPressed]}
+        onPress={() =>
+          navigation.navigate("Services", {
+            categoryId: item.id,
+            categoryName: item.name,
+          })
+        }>
+        {imageUrl ? (
+          <Image
+            source={{ uri: imageUrl }}
+            style={styles.cardImage}
+            contentFit="cover"
+            transition={200}
+            cachePolicy="memory-disk"
+          />
+        ) : null}
+        <View style={styles.cardRow}>
+          <Text style={styles.cardTitle}>{localized(item.name)}</Text>
+          <Text style={styles.chevron}>›</Text>
+        </View>
+      </Pressable>
+    );
+  };
 
   return (
     <SafeAreaView style={styles.safe} edges={["top", "left", "right"]}>
@@ -91,17 +107,25 @@ const styles = StyleSheet.create({
     gap: theme.spacing.md,
   },
   card: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
     backgroundColor: theme.palette.surface,
     borderRadius: theme.radius.lg,
-    padding: theme.spacing.lg,
     borderWidth: 1,
     borderColor: theme.palette.border,
+    overflow: "hidden",
     ...theme.shadow.card,
   },
   cardPressed: { opacity: 0.85 },
+  cardImage: {
+    width: "100%",
+    aspectRatio: 16 / 9,
+    backgroundColor: theme.palette.background,
+  },
+  cardRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    padding: theme.spacing.lg,
+  },
   cardTitle: { ...theme.typography.h3, color: theme.palette.text, flex: 1 },
   chevron: { ...theme.typography.h2, color: theme.palette.textMuted },
   trackLink: { padding: theme.spacing.lg, alignItems: "center" },

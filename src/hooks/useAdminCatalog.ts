@@ -29,7 +29,7 @@ export interface AdminServiceRow extends Service {
 async function fetchAdminCategories(): Promise<ServiceCategory[]> {
   const { data, error } = await supabase
     .from("service_categories")
-    .select("id, name, icon, sort_order, active, created_at")
+    .select("id, name, icon, sort_order, active, image_path, created_at")
     .order("sort_order", { ascending: true });
 
   if (error) {

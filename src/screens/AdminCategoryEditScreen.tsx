@@ -12,12 +12,20 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+import AdminImageManager from "../components/AdminImageManager";
 import Button from "../components/Button";
 import TextField from "../components/TextField";
 import { ErrorView, Loading } from "../components/States";
 import { useAdminCategories } from "../hooks/useAdminCatalog";
 import { useAuth, useIsAdmin } from "../hooks/useAuth";
-import { useUpsertCategory } from "../hooks/useCatalogMutations";
+import {
+  useSetCategoryImage,
+  useUpsertCategory,
+} from "../hooks/useCatalogMutations";
+import {
+  deleteCatalogImage,
+  uploadCatalogImage,
+} from "../lib/catalogImages";
 import theme from "../theme/theme";
 import type { ScreenProps } from "../navigation/types";
 
@@ -35,6 +43,7 @@ export default function AdminCategoryEditScreen({
   const isAdminQuery = useIsAdmin(session?.user.id);
   const categories = useAdminCategories();
   const upsert = useUpsertCategory();
+  const setCategoryImage = useSetCategoryImage();
 
   const [nameIt, setNameIt] = useState("");
   const [nameEn, setNameEn] = useState("");
@@ -110,6 +119,33 @@ export default function AdminCategoryEditScreen({
     );
   };
 
+  // Upload to a fresh versioned path, point the DB at it, and only then
+  // clean up the previous object. A failure before the swap completes must
+  // never delete the image customers currently see.
+  const onUploadImage = async (base64: string) => {
+    if (!categoryId) return;
+    const previousPath = existing?.image_path ?? null;
+    const path = await uploadCatalogImage("categories", categoryId, base64);
+    await setCategoryImage.mutateAsync({ categoryId, imagePath: path });
+    if (previousPath && previousPath !== path) {
+      try {
+        await deleteCatalogImage(previousPath);
+      } catch {
+        // Ignore: the swap already succeeded; a leaked old object is
+        // harmless, but surfacing an error here would mislead the admin.
+      }
+    }
+  };
+
+  const onRemoveImage = async () => {
+    if (!categoryId) return;
+    // Paths are versioned, so only the stored image_path identifies the
+    // current object — never recompute it.
+    const currentPath = existing?.image_path;
+    if (currentPath) await deleteCatalogImage(currentPath);
+    await setCategoryImage.mutateAsync({ categoryId, imagePath: null });
+  };
+
   // Deactivating hides the category (and its services) from customers.
   const onToggleActive = (next: boolean) => {
     if (next) {
@@ -138,6 +174,14 @@ export default function AdminCategoryEditScreen({
         <ScrollView
           contentContainerStyle={styles.content}
           keyboardShouldPersistTaps='handled'>
+          <AdminImageManager
+            imagePath={existing?.image_path}
+            canEdit={!!categoryId}
+            saveFirstHint={t("admin.catalog.image.saveFirstCategory")}
+            onUpload={onUploadImage}
+            onRemove={onRemoveImage}
+          />
+
           <TextField
             label={t("admin.catalog.fields.nameIt")}
             value={nameIt}

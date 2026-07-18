@@ -1,10 +1,7 @@
 import { Picker } from "@react-native-picker/picker";
-import * as ImagePicker from "expo-image-picker";
-import { Image } from "expo-image";
 import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
-  ActivityIndicator,
   Alert,
   KeyboardAvoidingView,
   Platform,
@@ -16,6 +13,7 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+import AdminImageManager from "../components/AdminImageManager";
 import Button from "../components/Button";
 import TextField from "../components/TextField";
 import { ErrorView, Loading } from "../components/States";
@@ -27,10 +25,9 @@ import {
 } from "../hooks/useCatalogMutations";
 import { useLocalized } from "../i18n/useLocalized";
 import {
-  deleteServiceImage,
-  getServiceImageUrl,
-  uploadServiceImage,
-} from "../lib/serviceImages";
+  deleteCatalogImage,
+  uploadCatalogImage,
+} from "../lib/catalogImages";
 import theme from "../theme/theme";
 import type { ScreenProps } from "../navigation/types";
 
@@ -66,8 +63,6 @@ export default function AdminServiceEditScreen({
   const [sortOrder, setSortOrder] = useState("0");
   const [active, setActive] = useState(true);
   const [errors, setErrors] = useState<Errors>({});
-  const [imageBusy, setImageBusy] = useState(false);
-  const [imageError, setImageError] = useState<string | null>(null);
 
   const isAuthorized = !!session && isAdminQuery.data === true;
 
@@ -158,80 +153,31 @@ export default function AdminServiceEditScreen({
     );
   };
 
-  const currentImageUrl = getServiceImageUrl(existing?.image_path);
-
-  const onChooseImage = async () => {
+  // Upload to a fresh versioned path, point the DB at it, and only then
+  // clean up the previous object. A failure before the swap completes must
+  // never delete the image customers currently see.
+  const onUploadImage = async (base64: string) => {
     if (!serviceId) return;
-    setImageError(null);
-    try {
-      const perm = await ImagePicker.requestMediaLibraryPermissionsAsync();
-      if (!perm.granted) {
-        Alert.alert(t("admin.catalog.image.permissionDenied"));
-        return;
+    const previousPath = existing?.image_path ?? null;
+    const path = await uploadCatalogImage("services", serviceId, base64);
+    await setServiceImage.mutateAsync({ serviceId, imagePath: path });
+    if (previousPath && previousPath !== path) {
+      try {
+        await deleteCatalogImage(previousPath);
+      } catch {
+        // Ignore: the swap already succeeded; a leaked old object is
+        // harmless, but surfacing an error here would mislead the admin.
       }
-      const result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: "images",
-        allowsEditing: true,
-        aspect: [16, 9],
-        quality: 0.7,
-        base64: true,
-      });
-      if (result.canceled) return;
-      const asset = result.assets[0];
-      if (!asset?.base64) {
-        setImageError(t("admin.catalog.image.uploadFailed"));
-        return;
-      }
-      setImageBusy(true);
-      // Upload to a fresh versioned path, point the DB at it, and only then
-      // clean up the previous object. A failure before the swap completes
-      // must never delete the image customers currently see.
-      const previousPath = existing?.image_path ?? null;
-      const path = await uploadServiceImage(serviceId, asset.base64);
-      await setServiceImage.mutateAsync({ serviceId, imagePath: path });
-      if (previousPath && previousPath !== path) {
-        try {
-          await deleteServiceImage(previousPath);
-        } catch {
-          // Ignore: the swap already succeeded; a leaked old object is
-          // harmless, but surfacing an error here would mislead the admin.
-        }
-      }
-    } catch {
-      setImageError(t("admin.catalog.image.uploadFailed"));
-    } finally {
-      setImageBusy(false);
     }
   };
 
-  const onRemoveImage = () => {
+  const onRemoveImage = async () => {
     if (!serviceId) return;
-    Alert.alert(
-      t("admin.catalog.image.removeTitle"),
-      t("admin.catalog.image.removeMessage"),
-      [
-        { text: t("admin.catalog.image.cancel"), style: "cancel" },
-        {
-          text: t("admin.catalog.image.removeConfirm"),
-          style: "destructive",
-          onPress: async () => {
-            setImageError(null);
-            setImageBusy(true);
-            try {
-              // Paths are versioned, so only the stored image_path identifies
-              // the current object — never recompute it.
-              const currentPath = existing?.image_path;
-              if (currentPath) await deleteServiceImage(currentPath);
-              await setServiceImage.mutateAsync({ serviceId, imagePath: null });
-            } catch {
-              setImageError(t("admin.catalog.image.uploadFailed"));
-            } finally {
-              setImageBusy(false);
-            }
-          },
-        },
-      ],
-    );
+    // Paths are versioned, so only the stored image_path identifies the
+    // current object — never recompute it.
+    const currentPath = existing?.image_path;
+    if (currentPath) await deleteCatalogImage(currentPath);
+    await setServiceImage.mutateAsync({ serviceId, imagePath: null });
   };
 
   // Deactivating hides the item from customers — confirm first.
@@ -262,69 +208,13 @@ export default function AdminServiceEditScreen({
         <ScrollView
           contentContainerStyle={styles.content}
           keyboardShouldPersistTaps='handled'>
-          <View style={styles.field}>
-            <Text style={styles.label}>{t("admin.catalog.image.title")}</Text>
-            {serviceId ? (
-              <>
-                {currentImageUrl ? (
-                  <Image
-                    source={{ uri: currentImageUrl }}
-                    style={styles.imagePreview}
-                    contentFit='cover'
-                    transition={200}
-                    cachePolicy='memory-disk'
-                  />
-                ) : (
-                  <View style={[styles.imagePreview, styles.imagePlaceholder]}>
-                    <Text style={styles.placeholderText}>
-                      {t("admin.catalog.image.none")}
-                    </Text>
-                  </View>
-                )}
-                <View style={styles.imageActions}>
-                  <View style={styles.imageActionButton}>
-                    <Button
-                      label={
-                        currentImageUrl
-                          ? t("admin.catalog.image.replace")
-                          : t("admin.catalog.image.choose")
-                      }
-                      onPress={onChooseImage}
-                      disabled={imageBusy}
-                    />
-                  </View>
-                  {currentImageUrl ? (
-                    <View style={styles.imageActionButton}>
-                      <Button
-                        label={t("admin.catalog.image.remove")}
-                        onPress={onRemoveImage}
-                        variant='secondary'
-                        disabled={imageBusy}
-                      />
-                    </View>
-                  ) : null}
-                </View>
-                {imageBusy ? (
-                  <View style={styles.busyRow}>
-                    <ActivityIndicator
-                      size='small'
-                      color={theme.palette.primary}
-                    />
-                    <Text style={styles.busyText}>
-                      {t("admin.catalog.image.uploading")}
-                    </Text>
-                  </View>
-                ) : null}
-                {imageError ? (
-                  <Text style={styles.error}>{imageError}</Text>
-                ) : null}
-              </>
-            ) : (
-              <Text style={styles.hint}>
-                {t("admin.catalog.image.saveFirst")}
-              </Text>
-            )}
-          </View>
+          <AdminImageManager
+            imagePath={existing?.image_path}
+            canEdit={!!serviceId}
+            saveFirstHint={t("admin.catalog.image.saveFirst")}
+            onUpload={onUploadImage}
+            onRemove={onRemoveImage}
+          />
 
           <View style={styles.field}>
             <Text style={styles.label}>
@@ -468,42 +358,6 @@ const styles = StyleSheet.create({
     ...theme.typography.caption,
     color: theme.palette.danger,
     marginTop: theme.spacing.xs,
-  },
-  imagePreview: {
-    width: "100%",
-    aspectRatio: 16 / 9,
-    borderRadius: theme.radius.md,
-    backgroundColor: theme.palette.surface,
-    marginBottom: theme.spacing.md,
-  },
-  imagePlaceholder: {
-    alignItems: "center",
-    justifyContent: "center",
-    borderWidth: 1,
-    borderColor: theme.palette.border,
-  },
-  placeholderText: {
-    ...theme.typography.caption,
-    color: theme.palette.textMuted,
-  },
-  imageActions: {
-    flexDirection: "row",
-    gap: theme.spacing.md,
-  },
-  imageActionButton: { flex: 1 },
-  busyRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: theme.spacing.sm,
-    marginTop: theme.spacing.sm,
-  },
-  busyText: {
-    ...theme.typography.caption,
-    color: theme.palette.textMuted,
-  },
-  hint: {
-    ...theme.typography.caption,
-    color: theme.palette.textMuted,
   },
   switchRow: {
     flexDirection: "row",
