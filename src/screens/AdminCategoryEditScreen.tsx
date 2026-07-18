@@ -22,10 +22,7 @@ import {
   useSetCategoryImage,
   useUpsertCategory,
 } from "../hooks/useCatalogMutations";
-import {
-  deleteCatalogImage,
-  uploadCatalogImage,
-} from "../lib/catalogImages";
+import { deleteCatalogImage, uploadCatalogImage } from "../lib/catalogImages";
 import theme from "../theme/theme";
 import type { ScreenProps } from "../navigation/types";
 
