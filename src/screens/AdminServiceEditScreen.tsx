@@ -29,7 +29,6 @@ import { useLocalized } from "../i18n/useLocalized";
 import {
   deleteServiceImage,
   getServiceImageUrl,
-  serviceImagePath,
   uploadServiceImage,
 } from "../lib/serviceImages";
 import theme from "../theme/theme";
@@ -184,8 +183,20 @@ export default function AdminServiceEditScreen({
         return;
       }
       setImageBusy(true);
+      // Upload to a fresh versioned path, point the DB at it, and only then
+      // clean up the previous object. A failure before the swap completes
+      // must never delete the image customers currently see.
+      const previousPath = existing?.image_path ?? null;
       const path = await uploadServiceImage(serviceId, asset.base64);
       await setServiceImage.mutateAsync({ serviceId, imagePath: path });
+      if (previousPath && previousPath !== path) {
+        try {
+          await deleteServiceImage(previousPath);
+        } catch {
+          // Ignore: the swap already succeeded; a leaked old object is
+          // harmless, but surfacing an error here would mislead the admin.
+        }
+      }
     } catch {
       setImageError(t("admin.catalog.image.uploadFailed"));
     } finally {
@@ -207,9 +218,10 @@ export default function AdminServiceEditScreen({
             setImageError(null);
             setImageBusy(true);
             try {
-              await deleteServiceImage(
-                existing?.image_path ?? serviceImagePath(serviceId),
-              );
+              // Paths are versioned, so only the stored image_path identifies
+              // the current object — never recompute it.
+              const currentPath = existing?.image_path;
+              if (currentPath) await deleteServiceImage(currentPath);
               await setServiceImage.mutateAsync({ serviceId, imagePath: null });
             } catch {
               setImageError(t("admin.catalog.image.uploadFailed"));
